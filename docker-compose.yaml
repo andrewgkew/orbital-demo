@@ -85,6 +85,7 @@ services:
 
    kafkaStub:
       image: 'bitnami/kafka:latest'
+      container_name: kafka_stub
       expose:
          - 9092
          - 9093
@@ -103,12 +104,3 @@ volumes:
    postgres_data:
    prometheus_data:
    postgres_stub_data:
-
-
-# command to connect to kafka
-# kafka-console-producer.sh --broker-list kafkaStub:9092 --topic account
-# example message
-# {"id":"1","type":"personal"}
-
-# command to connect to postgres
-# psql -Ustub stub
