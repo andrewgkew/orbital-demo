@@ -1,0 +1,10 @@
+import com.orbitalhq.kafka.KafkaService
+import com.orbitalhq.kafka.KafkaOperation
+
+namespace com.example
+
+@KafkaService(connectionName = "kafka")
+service KafkaAccountService {
+  @KafkaOperation(topic = "account", offset = "latest") //offset can be earliest or latest
+  stream account : Stream<KafkaAccount>
+}

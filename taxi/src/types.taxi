@@ -1,0 +1,4 @@
+namespace com.example
+
+type AccountId inherits String
+type AccountType inherits String

@@ -1,0 +1,6 @@
+namespace com.example
+
+model KafkaAccount {
+  id : AccountId
+  type : AccountType
+}
