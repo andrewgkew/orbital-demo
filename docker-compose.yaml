@@ -1,0 +1,150 @@
+services:
+   orbital:
+      image: orbitalhq/orbital:${ORBITAL_VERSION:-next-jammy}
+      environment:
+         JAVA_OPTS: >-
+            -Xms256m
+            -Xmx1024m
+         OPTIONS: >-
+            --vyne.analytics.persistRemoteCallResponses=true
+            --vyne.analytics.persistResults=true
+            --vyne.db.username=orbital
+            --vyne.db.password=changeme
+            --vyne.db.host=postgres
+            --vyne.toggles.nebulaEnabled=true            
+            --vyne.toggles.policiesEnabled=true            
+            --vyne.workspace.config-file=/opt/service/workspace/workspace.conf
+      ports:
+         - "9022:9022"
+      expose:
+         - 9022
+      volumes:
+         - ~/.orbital/license/:/opt/var/vyne/license/
+         - .:/opt/service/workspace
+         - ./taxi/config:/opt/service/config
+      depends_on:
+         - postgres
+      deploy:
+         resources:
+            limits:
+               memory: 600mb
+
+
+   postgres:
+      image: postgres:15
+      expose:
+         - 5432
+      ports:
+         - "25432:5432"
+      environment:
+         POSTGRES_DB: orbital
+         POSTGRES_USER: orbital
+         POSTGRES_PASSWORD: changeme
+      volumes:
+         - postgres_data:/var/lib/postgresql/data
+
+
+   # Nebula is a test and stubbing tool.
+   # You can use Nebula to quickly deploy and script stub infrastructure, such as
+   # Kafka brokers, databases, HTTP servers, AWS instances and more.
+   #
+   # See more at https://github.com/orbitalapi/nebula
+   #
+   # This is optional, and shouldn't be deployed in production.
+   nebula:
+     privileged: true
+     image: orbitalhq/nebula:next
+     expose:
+       - 8099
+## Remove or comment out these lines if running on Linux
+
+     ports:
+       - "8099:8099"
+
+## Remove or comment out these lines if running on Windows or Mac
+#
+     # Nebula starts other docker containers, such as Kafka etc., so needs to
+     # run on the host network
+     #
+     network_mode: "host"
+    #
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock  # Allow nebula to control Docker
+     environment:
+#       - DOCKER_HOST=tcp://localhost:2375
+       - DOCKER_HOST=unix:///var/run/docker.sock
+## Remove or comment out these lines if running on Linux
+
+       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
+       - TESTCONTAINERS_RYUK_DISABLED=true
+
+
+   # prometheus instance, which scrapes metrics from
+   # the orbital and the stream-server
+   # Optional.
+   # If provided (and configured), then
+   # metrics are shown in endpoint dashboards
+   prometheus:
+      image: prom/prometheus:v2.44.0
+      ports:
+         - "9090:9090"
+      expose:
+         - 9090
+      volumes:
+         - ./prometheus_data:/etc/prometheus
+      depends_on:
+         - prometheus-config-downloader
+      command:
+         - --config.file=/etc/prometheus/prometheus.yml
+         - --web.enable-lifecycle
+
+
+   ## This image downloads the prometheus configuration file from
+   ## https://start.orbitalhq.com/prometheus.yml, and then forces prometheus to reload it's config, then quits
+   prometheus-config-downloader:
+      image: alpine
+      volumes:
+         - ./prometheus_data:/etc/prometheus
+      command: /bin/sh -c "apk add --no-cache wget && wget -O /etc/prometheus/prometheus.yml https://start.orbitalhq.com/prometheus.yml && wget --method=POST http://prometheus:9090/-/reload --quiet -O -"
+
+   ## For stubs
+   postgresStub:
+      image: postgres:15
+      expose:
+         - 5432
+      ports:
+         - "25433:5432"
+      environment:
+         POSTGRES_DB: stub
+         POSTGRES_USER: stub
+         POSTGRES_PASSWORD: stub
+      volumes:
+         - postgres_stub_data:/var/lib/postgresql/data
+
+   kafkaStub:
+      image: 'bitnami/kafka:latest'
+      expose:
+         - 9092
+         - 9093
+      ports:
+         - "9092:9092"
+         - "9093:9093"
+      environment:
+         - KAFKA_CFG_NODE_ID=0
+         - KAFKA_CFG_PROCESS_ROLES=controller,broker
+         - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+         - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+         - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafkaStub:9093
+         - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+
+volumes:
+   postgres_data:
+   prometheus_data:
+   postgres_stub_data:
+
+
+# command to connect to kafka
+# kafka-console-producer.sh --broker-list host.docker.internal:9092 --topic stockQuotes
+
+# command to connect to postgres
+# psql -Ustub stub
