@@ -29,7 +29,6 @@ services:
             limits:
                memory: 600mb
 
-
    postgres:
       image: postgres:15
       expose:
@@ -42,42 +41,6 @@ services:
          POSTGRES_PASSWORD: changeme
       volumes:
          - postgres_data:/var/lib/postgresql/data
-
-
-   # Nebula is a test and stubbing tool.
-   # You can use Nebula to quickly deploy and script stub infrastructure, such as
-   # Kafka brokers, databases, HTTP servers, AWS instances and more.
-   #
-   # See more at https://github.com/orbitalapi/nebula
-   #
-   # This is optional, and shouldn't be deployed in production.
-   nebula:
-     privileged: true
-     image: orbitalhq/nebula:next
-     expose:
-       - 8099
-## Remove or comment out these lines if running on Linux
-
-     ports:
-       - "8099:8099"
-
-## Remove or comment out these lines if running on Windows or Mac
-#
-     # Nebula starts other docker containers, such as Kafka etc., so needs to
-     # run on the host network
-     #
-#     network_mode: "host"
-    #
-     volumes:
-       - /var/run/docker.sock:/var/run/docker.sock  # Allow nebula to control Docker
-     environment:
-#       - DOCKER_HOST=tcp://localhost:2375
-       - DOCKER_HOST=unix:///var/run/docker.sock
-## Remove or comment out these lines if running on Linux
-
-       - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
-       - TESTCONTAINERS_RYUK_DISABLED=true
-
 
    # prometheus instance, which scrapes metrics from
    # the orbital and the stream-server
@@ -97,7 +60,6 @@ services:
       command:
          - --config.file=/etc/prometheus/prometheus.yml
          - --web.enable-lifecycle
-
 
    ## This image downloads the prometheus configuration file from
    ## https://start.orbitalhq.com/prometheus.yml, and then forces prometheus to reload it's config, then quits
@@ -144,7 +106,9 @@ volumes:
 
 
 # command to connect to kafka
-# kafka-console-producer.sh --broker-list host.docker.internal:9092 --topic stockQuotes
+# kafka-console-producer.sh --broker-list kafkaStub:9092 --topic account
+# example message
+# {"id":"1","type":"personal"}
 
 # command to connect to postgres
 # psql -Ustub stub
