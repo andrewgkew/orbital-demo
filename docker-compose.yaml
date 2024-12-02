@@ -66,7 +66,7 @@ services:
      # Nebula starts other docker containers, such as Kafka etc., so needs to
      # run on the host network
      #
-     network_mode: "host"
+#     network_mode: "host"
     #
      volumes:
        - /var/run/docker.sock:/var/run/docker.sock  # Allow nebula to control Docker
