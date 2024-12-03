@@ -14,6 +14,7 @@ services:
             --vyne.toggles.nebulaEnabled=true            
             --vyne.toggles.policiesEnabled=true            
             --vyne.workspace.config-file=/opt/service/workspace/workspace.conf
+            --vyne.stream-server.enabled=true
       ports:
          - "9022:9022"
       expose:
@@ -100,7 +101,23 @@ services:
          - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafkaStub:9093
          - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
+   mongodbStub:
+      image: mongo:latest
+      container_name: mongodbStub
+      environment:
+         MONGO_INITDB_ROOT_USERNAME: admin
+         MONGO_INITDB_ROOT_PASSWORD: password
+      command:
+         - '--logpath'
+         - '/var/log/mongodb/mongod.log'
+      ports:
+         - 27017:27017
+      volumes:
+         - ./mongodb_data:/data/db
+         - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+
 volumes:
    postgres_data:
    prometheus_data:
    postgres_stub_data:
+   mongodb_data:
