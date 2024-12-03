@@ -70,20 +70,6 @@ services:
          - ./prometheus_data:/etc/prometheus
       command: /bin/sh -c "apk add --no-cache wget && wget -O /etc/prometheus/prometheus.yml https://start.orbitalhq.com/prometheus.yml && wget --method=POST http://prometheus:9090/-/reload --quiet -O -"
 
-   ## For stubs
-   postgresStub:
-      image: postgres:15
-      expose:
-         - 5432
-      ports:
-         - "25433:5432"
-      environment:
-         POSTGRES_DB: stub
-         POSTGRES_USER: stub
-         POSTGRES_PASSWORD: stub
-      volumes:
-         - postgres_stub_data:/var/lib/postgresql/data
-
    kafkaStub:
       image: 'bitnami/kafka:latest'
       container_name: kafka_stub
@@ -119,5 +105,4 @@ services:
 volumes:
    postgres_data:
    prometheus_data:
-   postgres_stub_data:
    mongodb_data:
