@@ -1,5 +1,7 @@
 import com.orbitalhq.kafka.KafkaService
 import com.orbitalhq.kafka.KafkaOperation
+import com.orbitalhq.mongo.MongoService
+import com.orbitalhq.mongo.UpsertOperation
 
 namespace com.example
 
@@ -7,4 +9,11 @@ namespace com.example
 service KafkaAccountService {
   @KafkaOperation(topic = "account", offset = "latest") //offset can be earliest or latest
   stream account : Stream<KafkaAccount>
+}
+
+@MongoService( connection = "mongo" )
+service MongoAccountService {
+   table accounts : Account[]
+   @UpsertOperation
+   write operation upsertAccount(Account):Account
 }

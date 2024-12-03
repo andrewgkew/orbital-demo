@@ -1,6 +1,34 @@
+import com.orbitalhq.mongo.Collection
+import com.orbitalhq.kafka.KafkaMessageMetadata
+import com.orbitalhq.kafka.KafkaMetadataType
+
 namespace com.example
 
 model KafkaAccount {
   id : AccountId
   type : AccountType
+
+  @KafkaMessageMetadata(KafkaMetadataType.Topic)
+  topic : KafkaTopic
+
+  @KafkaMessageMetadata(KafkaMetadataType.Offset)
+  offset : KafkaOffset
+
+  @KafkaMessageMetadata(KafkaMetadataType.Partition)
+  partition : KafkaPartition
+}
+
+@Collection(connection = "mongo", collection = "accounts")
+closed parameter model Account inherits MongoAudit {
+    @Id
+    id : AccountId
+    type : AccountType
+
+    _topicPartitionOffset : AccountTopicPartitionOffset
+}
+
+model MongoAudit {
+    @SetOnInsert
+    _inserted: InsertedTimeStamp inherits Instant = now()
+    _updated: UpdatedTimeStamp inherits Instant = now()
 }

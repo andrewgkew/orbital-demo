@@ -1,0 +1,4 @@
+query streamKafkaToMongo {
+    stream { KafkaAccount }
+    call com.example.MongoAccountService::upsertAccount
+}

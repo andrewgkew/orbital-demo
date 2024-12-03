@@ -1,4 +1,11 @@
+import taxi.stdlib.concat
+
 namespace com.example
 
 type AccountId inherits String
 type AccountType inherits String
+type KafkaTopic inherits String
+type KafkaOffset inherits String
+type KafkaPartition inherits String
+
+type AccountTopicPartitionOffset inherits String by concat(KafkaTopic,"-",KafkaPartition,"-",KafkaOffset)
