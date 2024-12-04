@@ -85,6 +85,7 @@ You are now connected to Mongo and can run standard Mongo commands
 ```shell
 orbital> show collections
 accounts
+customers
 ```
 3. Find all records in a collection `accounts`
 ```shell
@@ -120,27 +121,100 @@ orbital> db.accounts.find()
   }
 ]
 ```
+##### Init of Mongo data
+By default the customers collection is pre-populated with data when Mongo container is created
+This allows us to have this reference data so that it can be used as a look up by Orbital
+If you want to view this data you can collect to mongo and query that collection
+1. Run the following command to connect onto mongo and use `mongosh` to connected to the database
+```shell
+docker exec -it $(docker ps -aqf "name=mongodbStub") mongosh orbital -u orbital -p
+```
+Enter the password of `orbital` and then you should see the following response
+```shell
+Enter password: *******
+Current Mongosh Log ID:	674f243307afac0501f7c613
+Connecting to:		mongodb://<credentials>@127.0.0.1:27017/orbital?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.3
+Using MongoDB:		8.0.3
+Using Mongosh:		2.3.3
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+orbital>
+```
+2. Find all records in a collection `customers`
+```shell
+orbital> db.customers.find()
+[
+  { _id: '1', title: 'Mr', firstname: 'John', surname: 'Doe' },
+  { _id: '2', title: 'Mrs', firstname: 'Jane', surname: 'Doe' },
+  { _id: '3', title: 'Dr', firstname: 'Theodor', surname: 'Seuss' },
+  { _id: '4', title: 'Miss', firstname: 'Janie', surname: 'Doe' },
+  { _id: '5', title: 'Mr', firstname: 'Richard', surname: 'Roe' }
+]
+```
+
+## Mocked out API datasource
+Wiremock is being used as a stubbed API endpoint that allows us to define endpoints that Orbital can call
+to get some data. Wiremock is configured to create subs located in the
+`docker/apiMappings` directory.
+
+An example stubbed endpoint looks as follows
+```shell
+{
+  "request": {
+    "method": "GET",
+    "url": "/categoryByAccountType/business"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"type\":\"business\",\"category\":\"S1234\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
+```
+
+Then you can call this API as follows:
+```shell
+~ % http :8080/categoryByAccountType/business
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Type: application/json
+Matched-Stub-Id: 2225b0ea-ccbf-40d5-8d33-0782877a0a18
+Transfer-Encoding: chunked
+
+{
+    "category": "S1234",
+    "type": "business"
+}
+```
 
 ## Endpoints
 By default there are a few endpoints that have been define within Orbital
 1. Stream
-The stream endpoint is a named query that connects onto the Kafka topic and writes any message
-that get sent to the topic into MongoDB collection. This stream looks as follows
+   The stream endpoint is a named query that connects onto the Kafka topic and writes any message
+   that get sent to the topic into MongoDB collection. This stream looks as follows
 ```shell
-query streamKafkaToMongo {
+query streamKafkaAccountToMongo {
     stream { KafkaAccount }
-    call com.example.MongoAccountService::upsertAccount
+    call com.example.account.MongoAccountService::upsertAccount
 }
 ```
-2. REST API
+2. REST APIs
 The REST API is a HTTP operation that is wrapped around getting data out of Mongo. This API looks
 as follows
 ```shell
 @taxi.http.HttpOperation(url = '/api/q/accounts', method = 'GET')
 query getAllAccounts {
-  find { Account[] }
+  find { AccountRead[] } as CustomerAccount[]
+}
+
+@taxi.http.HttpOperation(url = '/api/q/accounts/{accountId}', method = 'GET')
+query getAccount(
+  @taxi.http.PathVariable("accountId") accountId : AccountId) {
+  find { AccountRead(AccountId == accountId ) } as CustomerAccount
 }
 ```
 To access this API you can use either a browser or cli tool like httpie
-* Browser: `http://localhost:9022/api/q/accounts`
-* Httpie: `http :9022/api/q/accounts`
+* Browser: `http://localhost:9022/api/q/accounts` or `http://localhost:9022/api/q/accounts/1`
+* Httpie: `http :9022/api/q/accounts` or `http :9022/api/q/accounts/1`
