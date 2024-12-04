@@ -2,11 +2,18 @@ import com.orbitalhq.mongo.Collection
 import com.orbitalhq.kafka.KafkaMessageMetadata
 import com.orbitalhq.kafka.KafkaMetadataType
 
-namespace com.example
+import com.example.customer.CustomerId
+import com.example.MongoAudit
+import com.example.customer.Title
+import com.example.customer.FirstName
+import com.example.customer.Surname
+
+namespace com.example.account
 
 model KafkaAccount {
   id : AccountId
   type : AccountType
+  customerId: CustomerId
 
   @KafkaMessageMetadata(KafkaMetadataType.Topic)
   topic : KafkaTopic
@@ -23,6 +30,7 @@ closed parameter model Account inherits MongoAudit {
     @Id
     id : AccountId
     type : AccountType
+    customerId : CustomerId
 
     _topicPartitionOffset : AccountTopicPartitionOffset
 }
@@ -31,4 +39,20 @@ model MongoAudit {
     @SetOnInsert
     _inserted: InsertedTimeStamp inherits Instant = now()
     _updated: UpdatedTimeStamp inherits Instant = now()
+}
+
+@Collection(connection = "mongo", collection = "accounts")
+closed parameter model AccountRead inherits Secret {
+    @Id
+    id : AccountId
+    type : AccountType
+    customerId : CustomerId
+}
+
+model CustomerAccount {
+  accountId: AccountId
+  accountType: AccountType
+  subType: AccountSubType
+  category: AccountCategory
+  name: Name inherits String = concat(Title,' ',FirstName,' ',Surname)
 }

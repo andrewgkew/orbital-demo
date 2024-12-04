@@ -1,0 +1,10 @@
+@taxi.http.HttpOperation(url = '/api/q/accounts', method = 'GET')
+query getAllAccounts {
+  find { AccountRead[] } as CustomerAccount[]
+}
+
+@taxi.http.HttpOperation(url = '/api/q/accounts/{accountId}', method = 'GET')
+query getAccount(
+  @taxi.http.PathVariable("accountId") accountId : AccountId) {
+  find { AccountRead(AccountId == accountId ) } as CustomerAccount
+}

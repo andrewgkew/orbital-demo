@@ -1,9 +1,14 @@
 import taxi.stdlib.concat
 
-namespace com.example
+namespace com.example.account
 
 type AccountId inherits String
 type AccountType inherits String
+type AccountSubType inherits String by when(lowerCase(AccountType)) {
+  'personal' -> 'Retail'
+  'business' -> 'SME'
+  else -> 'NA'
+}
 type KafkaTopic inherits String
 type KafkaOffset inherits String
 type KafkaPartition inherits String

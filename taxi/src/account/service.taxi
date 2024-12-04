@@ -3,7 +3,7 @@ import com.orbitalhq.kafka.KafkaOperation
 import com.orbitalhq.mongo.MongoService
 import com.orbitalhq.mongo.UpsertOperation
 
-namespace com.example
+namespace com.example.account
 
 @KafkaService(connectionName = "kafka")
 service KafkaAccountService {
@@ -13,7 +13,7 @@ service KafkaAccountService {
 
 @MongoService( connection = "mongo" )
 service MongoAccountService {
-   table accounts : Account[]
+   table accounts : AccountRead[]
    @UpsertOperation
    write operation upsertAccount(Account):Account
 }
