@@ -35,8 +35,8 @@ docker exec -it $(docker ps -aqf "name=kafka_stub") kafka-console-producer.sh --
 ```
 2. Put a message onto the topic
 ```shell
-{"id":"1","type":"personal"}
-{"id":"2","type":"business"}
+{"id":"1","type":"personal","customerId":"1"}
+{"id":"2","type":"business","customerId":"2"}
 ```
 3. View this in Orbital by running the following query in Query Editor
 ```shell
