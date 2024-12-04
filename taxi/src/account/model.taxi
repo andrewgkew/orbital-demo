@@ -3,7 +3,6 @@ import com.orbitalhq.kafka.KafkaMessageMetadata
 import com.orbitalhq.kafka.KafkaMetadataType
 
 import com.example.customer.CustomerId
-import com.example.MongoAudit
 import com.example.customer.Title
 import com.example.customer.FirstName
 import com.example.customer.Surname
