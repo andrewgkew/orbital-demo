@@ -1,0 +1,8 @@
+import com.example.account.AccountType
+
+namespace com.example.category
+
+closed model Category {
+  type: AccountType
+  category: AccountCategory
+}

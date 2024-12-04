@@ -1,0 +1,11 @@
+import com.example.account.AccountType
+
+namespace com.example.category
+
+@HttpService(baseUrl="http://host.docker.internal:8080")
+service CategoryService {
+  @HttpOperation(method = 'GET', url = '/categoryByAccountType/{accountType}')
+  operation getCategoryFromAccountType(
+        @PathVariable(value = "accountType") accountType: AccountType
+        ): Category
+}
