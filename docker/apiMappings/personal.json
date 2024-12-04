@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/categoryByAccountType/personal"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"type\":\"personal\",\"category\":\"S78910\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
