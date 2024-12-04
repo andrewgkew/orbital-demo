@@ -46,12 +46,12 @@ stream { KafkaAccount }
 
 ### MongoDB
 One of the other data source is MongoDB. By default when the mongo container comes up it inializes 
-mongo with a new databases called `orbital` and a new collection called `accounts`. There is also
+mongo with a new databases called `orbital` and a few collections `accounts`, `customers`. There is also
 a username/password created set to `orbital/orbital`.
 
 #### Init
 There is an initialization script that is defined in the project and run once when Mongo comes up
-which creates new `orbital` database, username and password and `accounts` collection. This is defined
+which creates new `orbital` database, username and password and `accounts`/`customers` collection. This is defined
 it `docker/init-mongo.js`
 
 #### Data
@@ -121,7 +121,7 @@ orbital> db.accounts.find()
   }
 ]
 ```
-##### Init of Mongo data
+#### Init of Mongo data
 By default the customers collection is pre-populated with data when Mongo container is created
 This allows us to have this reference data so that it can be used as a look up by Orbital
 If you want to view this data you can collect to mongo and query that collection
@@ -191,7 +191,7 @@ Transfer-Encoding: chunked
 
 ## Endpoints
 By default there are a few endpoints that have been define within Orbital
-1. Stream
+1. *Stream:*
    The stream endpoint is a named query that connects onto the Kafka topic and writes any message
    that get sent to the topic into MongoDB collection. This stream looks as follows
 ```shell
@@ -200,7 +200,7 @@ query streamKafkaAccountToMongo {
     call com.example.account.MongoAccountService::upsertAccount
 }
 ```
-2. REST APIs
+2. *REST APIs:* 
 The REST API is a HTTP operation that is wrapped around getting data out of Mongo. This API looks
 as follows
 ```shell
