@@ -1,0 +1,9 @@
+import com.orbitalhq.mongo.MongoService
+import com.orbitalhq.mongo.UpsertOperation
+
+namespace com.example.customer
+
+@MongoService( connection = "mongo" )
+service MongoCustomerService {
+   table customers : Customer[]
+}

@@ -1,0 +1,12 @@
+import com.orbitalhq.mongo.Collection
+
+namespace com.example.customer
+
+@Collection(connection = "mongo", collection = "customers")
+closed parameter model Customer {
+    @Id
+    _id : CustomerId
+    title : Title
+    firstname : FirstName
+    surname : Surname
+}

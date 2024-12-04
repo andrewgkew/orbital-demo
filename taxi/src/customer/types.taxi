@@ -1,0 +1,6 @@
+namespace com.example.customer
+
+type CustomerId inherits String
+type Title inherits String
+type FirstName inherits String
+type Surname inherits String
