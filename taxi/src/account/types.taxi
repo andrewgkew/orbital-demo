@@ -14,3 +14,6 @@ type KafkaOffset inherits String
 type KafkaPartition inherits String
 
 type AccountTopicPartitionOffset inherits String by concat(KafkaTopic,"-",KafkaPartition,"-",KafkaOffset)
+
+type ErrorCode inherits String
+type ErrorMessage inherits String
