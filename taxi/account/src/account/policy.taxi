@@ -1,19 +1,36 @@
+import com.example.category.AccountCategory
+import com.example.common.BadRequestError
+import com.example.common.InternalServerError
+
 namespace com.example.account
 
 model Secret
 
-type ValidCategory by (AccountCategory) ->
-  AccountCategory == "S1234"
+type ValidCategory by (AccountCategory) -> AccountCategory == "S1234"
 
 policy EnforceAccess against Secret (category: AccountCategory) ->  {
   read {
     when {
-      category == null -> throw((NotAuthorizedError)  { message: "Not Authrozied" })
+      category == null -> throw((BadRequestError)  { message: "Category not found" })
       ValidCategory -> Secret
-      else -> throw( (BadRequestError)  {
-         code: AccountErrors.enumForName(category).code,
+      AccountErrors.hasEnumNamed(category) -> throw((BadRequestError)
+      {
          message: AccountErrors.enumForName(category).message
+      })
+      else -> throw((InternalServerError)  {
+         message: AccountErrors.enumForName('DEFAULT').message
       })
     }
   }
+}
+
+type PCI inherits String
+
+policy EnforcePCI against PCI (type: AccountType) -> {
+    read {
+        when {
+            type == "personal" -> PCI
+            else -> "***"
+        }
+    }
 }
