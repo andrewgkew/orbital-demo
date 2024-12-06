@@ -3,9 +3,7 @@ import com.orbitalhq.kafka.KafkaMessageMetadata
 import com.orbitalhq.kafka.KafkaMetadataType
 
 import com.example.customer.CustomerId
-import com.example.customer.Title
-import com.example.customer.FirstName
-import com.example.customer.Surname
+import com.example.customer.CustomerName
 
 namespace com.example.account
 
@@ -41,7 +39,7 @@ model MongoAudit {
 }
 
 @Collection(connection = "mongo", collection = "accounts")
-closed parameter model AccountRead inherits Secret {
+closed parameter model AccountRead inherits Secret  {
     @Id
     id : AccountId
     type : AccountType
@@ -53,5 +51,5 @@ model CustomerAccount {
   accountType: AccountType
   subType: AccountSubType
   category: AccountCategory
-  name: Name inherits String = concat(Title,' ',FirstName,' ',Surname)
+  name: CustomerName
 }

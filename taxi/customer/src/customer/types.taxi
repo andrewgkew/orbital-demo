@@ -1,6 +1,9 @@
+import com.example.common.PII
+
 namespace com.example.customer
 
 type CustomerId inherits String
-type Title inherits String
-type FirstName inherits String
-type Surname inherits String
+type Title inherits PII
+type FirstName inherits PII
+type Surname inherits PII
+type CustomerName inherits String = concat(Title,' ',FirstName,' ',Surname)

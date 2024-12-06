@@ -1,6 +1,7 @@
 import com.example.category.AccountCategory
 import com.example.common.BadRequestError
 import com.example.common.InternalServerError
+import com.example.common.PII
 
 namespace com.example.account
 
@@ -24,12 +25,10 @@ policy EnforceAccess against Secret (category: AccountCategory) ->  {
   }
 }
 
-type PCI inherits String
-
-policy EnforcePCI against PCI (type: AccountType) -> {
+policy EnforcePCI against PII (type: AccountType) -> {
     read {
         when {
-            type == "personal" -> PCI
+            type == "personal" -> PII
             else -> "***"
         }
     }

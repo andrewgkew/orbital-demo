@@ -19,7 +19,7 @@ model ErrorResponse {
 }
 
 enum AccountErrors<ErrorResponse> {
-  S78910({message: "This error is coming from an enum"}),
+  S78910({message: "This error is coming from an enum for category S78910"}),
   E3456({message: "This is a bad error"}),
   DEFAULT({message: "This is an internal server error"})
 }
