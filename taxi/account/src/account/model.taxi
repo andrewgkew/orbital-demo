@@ -41,7 +41,7 @@ model MongoAudit {
 }
 
 @Collection(connection = "mongo", collection = "accounts")
-closed parameter model AccountRead {
+closed parameter model AccountRead inherits Secret {
     @Id
     id : AccountId
     type : AccountType

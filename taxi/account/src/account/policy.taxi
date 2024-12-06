@@ -2,11 +2,14 @@ namespace com.example.account
 
 model Secret
 
+type ValidCategory by (AccountCategory) ->
+  AccountCategory == "S1234"
+
 policy EnforceAccess against Secret (category: AccountCategory) ->  {
   read {
     when {
       category == null -> throw((NotAuthorizedError)  { message: "Not Authrozied" })
-      category == "S1234" -> Secret
+      ValidCategory -> Secret
       else -> throw( (BadRequestError)  {
          code: AccountErrors.enumForName(category).code,
          message: AccountErrors.enumForName(category).message
