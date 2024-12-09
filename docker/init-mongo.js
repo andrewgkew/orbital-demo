@@ -15,6 +15,7 @@ db.createUser({
 
 db.createCollection('accounts');
 db.createCollection('customers');
+db.createCollection('parameters');
 
 db.customers.insert([
     {"_id" : "1","title" : "Mr","firstname" : "John","surname" : "Doe"},
@@ -22,4 +23,8 @@ db.customers.insert([
     {"_id" : "3","title" : "Dr","firstname" : "Theodor","surname" : "Seuss"},
     {"_id" : "4","title" : "Miss","firstname" : "Janie","surname" : "Doe"},
     {"_id" : "5","title" : "Mr","firstname" : "Richard","surname" : "Roe"},
+]);
+
+db.parameters.insert([
+    {"_id" : "ACCOUNT.STATES","params" :[{"name":"business", "value":"OPEN"},{"name":"personal", "value":"VALID"}]}
 ]);
