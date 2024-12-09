@@ -1,0 +1,15 @@
+import com.orbitalhq.mongo.Collection
+
+namespace com.example.common
+
+@Collection(connection = "mongo", collection = "parameters")
+parameter model Parameters {
+  @Id
+  _id: ParameterId
+  params: Params[]
+}
+
+model Params {
+  name : ParameterName
+  value : ParameterValue
+}

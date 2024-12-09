@@ -1,0 +1,8 @@
+import com.orbitalhq.mongo.MongoService
+
+namespace com.example.common
+
+@MongoService( connection = "mongo" )
+service MongoParameterService {
+   table parameters : Parameters[]
+}

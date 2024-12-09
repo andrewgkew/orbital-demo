@@ -14,3 +14,8 @@ type KafkaOffset inherits String
 type KafkaPartition inherits String
 
 type AccountTopicPartitionOffset inherits String by concat(KafkaTopic,"-",KafkaPartition,"-",KafkaOffset)
+type AccountState inherits String by (parameters: com.example.common.Parameters(ParameterId == "ACCOUNT.STATES"), accountType: AccountType) ->
+  filterByParameter(parameters.params, accountType)
+  .convert(ParameterValue[])
+  .exactlyOne()
+  .toRawType()

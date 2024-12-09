@@ -1,0 +1,5 @@
+namespace com.example.common
+
+type ParameterId inherits String
+type ParameterName inherits String
+type ParameterValue inherits String

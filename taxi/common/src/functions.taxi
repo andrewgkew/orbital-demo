@@ -1,0 +1,8 @@
+import taxi.stdlib.filter
+
+namespace com.example.common
+
+extension function filterByParameter(
+  parameters: Params[],
+  accountType: AccountType
+):ParameterValue[] -> parameters.filter ( (parameterName: ParameterName) -> parameterName == accountType)
