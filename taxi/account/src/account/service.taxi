@@ -15,6 +15,6 @@ service KafkaAccountService {
 service MongoAccountService {
    table accounts : AccountRead[]
 
-   @UpsertOperation
+   @UpsertOperation(batchSize = 5, batchDuration = 60000)
    write operation upsertAccount(Account):Account
 }
