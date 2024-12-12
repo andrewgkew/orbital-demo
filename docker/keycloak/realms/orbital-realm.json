@@ -95,6 +95,15 @@
         "attributes": {}
       },
       {
+        "id": "20354d7a-e4fe-47af-8ff6-187bca92f3f9",
+        "name": "PII",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "af6ff4fc-401d-46dd-b921-429c41bb0bb7",
+        "attributes": {}
+      },
+      {
         "id": "96f5a7b3-4f2d-4361-82d3-63f68349c92b",
         "name": "default-roles-orbital",
         "description": "${role_default-roles}",
@@ -463,7 +472,7 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "Admin", "default-roles-orbital" ],
+    "realmRoles" : [ "Admin", "PII","default-roles-orbital" ],
     "notBefore" : 0,
     "groups" : [ ]
   } ],
@@ -743,10 +752,12 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://host.docker.internal:9022"
+        "http://host.docker.internal:9022",
+        "http://localhost:9022"
       ],
       "webOrigins": [
-        "http://host.docker.internal:9022"
+        "http://host.docker.internal:9022",
+        "http://localhost:9022"
       ],
       "notBefore": 0,
       "bearerOnly": false,
