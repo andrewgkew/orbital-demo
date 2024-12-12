@@ -1,6 +1,6 @@
 services:
    orbital:
-      image: orbitalhq/orbital:${ORBITAL_VERSION:-next-jammy}
+      image: orbitalhq/orbital:${ORBITAL_VERSION:-0.34.0-M7-jammy}
       environment:
          JAVA_OPTS: >-
             -Xms256m
