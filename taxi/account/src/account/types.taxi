@@ -19,3 +19,5 @@ type AccountState inherits String by (parameters: com.example.common.Parameters(
   .convert(ParameterValue[])
   .exactlyOne()
   .toRawType()
+
+type Roles inherits String

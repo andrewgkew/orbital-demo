@@ -3,6 +3,8 @@ import com.example.common.BadRequestError
 import com.example.common.InternalServerError
 import com.example.common.PII
 
+import com.orbitalhq.auth.AuthClaims
+
 namespace com.example.account
 
 model Secret
@@ -25,10 +27,18 @@ policy EnforceAccess against Secret (category: AccountCategory) ->  {
   }
 }
 
-policy EnforcePCI against PII (type: AccountType) -> {
+model Realm_access {
+  roles : Roles[]
+}
+
+model UserCredentials inherits AuthClaims {
+  realm_access : Realm_access
+}
+
+policy EnforcePCI against PII (userCredentials: UserCredentials) -> {
     read {
         when {
-            type == "personal" -> PII
+            userCredentials.realm_access.roles.contains("PII") -> PII
             else -> "***"
         }
     }
