@@ -4,6 +4,7 @@ query getAllAccounts {
 }
 
 @taxi.http.HttpOperation(url = '/api/q/accounts/{accountId}', method = 'GET')
+@Cache
 query getAccount(
   @taxi.http.PathVariable("accountId") accountId : AccountId) {
   find { AccountRead(AccountId == accountId ) } as CustomerAccount
