@@ -1,6 +1,6 @@
 services:
    orbital:
-      image: orbitalhq/orbital:${ORBITAL_VERSION:-0.34.0-M7-jammy}
+      image: ${REGISTRY:-docker.io/}orbitalhq/orbital:${ORBITAL_VERSION:-0.34.0-M7-jammy}
       environment:
          JAVA_OPTS: >-
             -Xms256m
@@ -36,7 +36,7 @@ services:
                memory: 1024mb
 
    postgres:
-      image: postgres:15
+      image: ${REGISTRY:-docker.io/}postgres:15
       expose:
          - 5432
       ports:
@@ -54,7 +54,7 @@ services:
    # If provided (and configured), then
    # metrics are shown in endpoint dashboards
    prometheus:
-      image: prom/prometheus:v2.44.0
+      image: ${REGISTRY:-docker.io/}prom/prometheus:v2.44.0
       ports:
          - "9090:9090"
       expose:
@@ -70,7 +70,7 @@ services:
    ## This image downloads the prometheus configuration file from
    ## https://start.orbitalhq.com/prometheus.yml, and then forces prometheus to reload it's config, then quits
    prometheus-config-downloader:
-      image: alpine
+      image: ${REGISTRY:-docker.io/}alpine
       volumes:
          - ./prometheus_data:/etc/prometheus
       command: /bin/sh -c "apk add --no-cache wget && wget -O /etc/prometheus/prometheus.yml https://start.orbitalhq.com/prometheus.yml && wget --method=POST http://prometheus:9090/-/reload --quiet -O -"
@@ -93,7 +93,7 @@ services:
          - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
    mongodbStub:
-      image: mongo:latest
+      image: ${REGISTRY:-docker.io/}mongo:latest
       container_name: mongodbStub
       environment:
          MONGO_INITDB_ROOT_USERNAME: admin
@@ -109,7 +109,7 @@ services:
 
    apiStub:
       container_name: apiStub
-      image: wiremock/wiremock:latest
+      image: ${REGISTRY:-docker.io/}wiremock/wiremock:latest
       ports:
          - "8080:8080"
       volumes:
@@ -117,7 +117,7 @@ services:
          - ./docker/apiMappings/:/home/wiremock/mappings/
 
    keycloak:
-      image: bitnami/keycloak
+      image: ${REGISTRY:-docker.io/}bitnami/keycloak
       restart: always
       ports:
          - 8081:8080
@@ -134,7 +134,7 @@ services:
          - ./docker/keycloak/realms:/opt/bitnami/keycloak/data/import
 
    keycloakDB:
-      image: postgres:15
+      image: ${REGISTRY:-docker.io/}postgres:15
       expose:
          - 5432
       ports:
@@ -147,12 +147,12 @@ services:
          - keycloakdb_data:/var/lib/postgresql/data
 
    hazelcast:
-      image: hazelcast/hazelcast:5.5
+      image: ${REGISTRY:-docker.io/}hazelcast/hazelcast:5.5
       ports:
         - "5701:5701"
 
    management-center:
-      image: hazelcast/management-center:5.6.0
+      image: ${REGISTRY:-docker.io/}hazelcast/management-center:5.6.0
       ports:
          - "8082:8080"
       environment:
